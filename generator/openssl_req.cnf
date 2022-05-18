@@ -1,0 +1,28 @@
+[req]
+default_bits       = 4096 
+distinguished_name = req_distinguished_name
+req_extensions     = req_cert_extensions
+default_md         = sha256
+dirstring_type     = nombstr
+prompt             = no
+
+[req_distinguished_name]
+C = DE
+ST = Berlin
+L = Berlin
+O = Acme
+OU = X
+CN = service.example.com
+
+[req_cert_extensions]
+keyUsage = keyEncipherment, dataEncipherment
+extendedKeyUsage = serverAuth
+subjectAltName = @alt_names
+
+[alt_names]
+DNS.1 = service1.compute.internal 
+DNS.2 = service2.compute.internal 
+DNS.3 = service3.compute.internal
+DNS.4 = service1.compute2.internal
+DNS.5 = service2.compute2.internal
+DNS.6 = service3.compute2.internal

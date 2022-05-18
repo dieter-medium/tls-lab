@@ -1,0 +1,88 @@
+A small SSL/TLS-Lab
+===================
+
+You can try to test some misconfigurations.
+Don't spoil yourself by reading the source code.
+For hints you can read https://medium.com/@dieter.s/93644a316ea3[this story]
+
+You can start the lab with:
+
+```bash
+# destroy all, in case it exists incl. named volumes
+> docker compose down -v
+# first try to build all needed images
+> docker compose build
+# start the lab
+> docker compose up
+```
+
+
+For the following challenges multiple "consoles" are provided.
+All challenges for `console1` can also be executed with
+`console2`. Those consoles differ only in the underlying OS.
+
+The DNS entries:
+
+* service1.compute.internal
+* service2.compute.internal
+* service3.compute.internal
+* service4.compute.internal
+
+point to an nginx server and can be replaced with:
+
+* service1.compute2.internal
+* service2.compute2.internal
+* service3.compute2.internal
+* service4.compute2.internal
+
+if you want to "talk" to an apache2 server.
+
+Challenges, fix the issues with the following requests (some are obvious some not):
+
+1. `docker compose exec console1 curl https://service1.compute.internal`
+
+1. `docker compose exec console3 java SSLPoke service1.compute.internal 443`
+
+1. `docker compose exec console4 psql -h service5.compute.internal -U postgres`
+
+1. `docker compose exec console1 curl https://service2.compute.internal`
+
+1. `docker compose exec console1 curl https://service3.compute.internal`
+
+1. `docker compose exec console1 curl https://service4.compute.internal`
+
+
+.Spoiler {counter:spoiler}
+[%collapsible]
+====
+ `docker compose exec --user root console1 bash`
+can be used in order to connect to a container as root.
+====
+
+.Spoiler {counter:spoiler}
+[%collapsible]
+====
+ Challenge 1,2,3 can be fixed on client side.
+====
+
+.Spoiler {counter:spoiler}
+[%collapsible]
+====
+ Challenge 4 and 5 can be fixed on server side.
+====
+
+.Spoiler {counter:spoiler}
+[%collapsible]
+====
+ Challenge 6 needs a new csr.
+====
+
+.Spoiler {counter:spoiler}
+[%collapsible]
+====
+ If you want go easy you can use testssl.sh
+
+`docker compose exec  testssl testssl.sh https://service1.compute.internal`
+
+`docker compose exec  testssl testssl.sh -p -t postgres service5.compute.internal:5432`
+====

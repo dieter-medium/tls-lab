@@ -1,0 +1,16 @@
+FROM alpine:3.15.4
+
+RUN apk add --update curl \
+    iputils \
+    bind-tools \
+    openssl \
+    ca-certificates \
+    bash \
+    coreutils \
+    vim && \
+    rm -rf /var/cache/apk/*
+
+RUN adduser -D -s /bin/bash console1
+
+USER console1
+WORKDIR /home/console1

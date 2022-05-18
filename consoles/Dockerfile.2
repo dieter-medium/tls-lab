@@ -1,0 +1,14 @@
+FROM ubuntu:22.04
+
+RUN apt-get update && apt-get install -y \
+  curl \
+  iputils-ping \
+  dnsutils \
+  openssl \
+  vim \
+  && rm -rf /var/lib/apt/lists/*
+
+RUN useradd -ms /bin/bash console2
+
+USER console2
+WORKDIR /home/console2

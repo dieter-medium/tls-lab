@@ -1,0 +1,29 @@
+FROM openjdk:19-jdk-slim-buster
+
+RUN apt-get update && apt-get install -y \
+  curl \
+  iputils-ping \
+  dnsutils \
+  openssl \
+  vim \
+  && rm -rf /var/lib/apt/lists/*
+
+RUN useradd -ms /bin/bash console3 && chown console3 /home/console3
+
+USER console3
+WORKDIR /home/console3
+
+# https://confluence.atlassian.com/kb/unable-to-connect-to-ssl-services-due-to-pkix-path-building-failed-error-779355358.html
+# https://github.com/gebi/sslpoke
+ADD --chown=console3 https://raw.githubusercontent.com/gebi/sslpoke/8d1e2d78fdf0f6ea32e04d5a60e6655e5b552ce1/SSLPoke.java SSLPoke.java
+
+ADD --chown=console3 checksums.sha256 checksum.sha256
+RUN sha256sum -c checksum.sha256
+
+# https://stackoverflow.com/questions/28327620/difference-between-java-options-java-tool-options-and-java-opts
+ENV JAVA_TOOL_OPTIONS="-Djavax.net.ssl.trustStore=/usr/src/myapp/cacerts"
+
+RUN cp /usr/local/openjdk-19/lib/security/cacerts .
+
+
+RUN javac --add-exports java.base/sun.net.www.protocol.http=ALL-UNNAMED SSLPoke.java
